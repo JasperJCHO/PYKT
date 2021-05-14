@@ -1,6 +1,7 @@
 import numpy
 from keras.models import Sequential
 from keras.layers import Dense
+import tensorflow as tf
 
 dataset1 = numpy.loadtxt("data/diabetes.csv", skiprows=1, delimiter=",")
 print(dataset1.shape)
@@ -20,7 +21,14 @@ model.summary()
 print("before training, model coef:", output_layer.get_weights()[0])
 print("before training, model intercept:", output_layer.get_weights()[1])
 
-model.fit(inputList, resultList, epochs=200, batch_size=20, verbose=0)
+
+import datetime, os
+logdir = os.path.join("logs2", datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
+tensorboard_callback = tf.keras.callbacks.TensorBoard(logdir, histogram_freq=1)
+
+#model.fit(feature_train, label_train, epochs=200, batch_size=20, verbose=0, callbacks=[tensorboard_callback])
+
+model.fit(inputList, resultList, epochs=200, batch_size=20, verbose=0, callbacks=[tensorboard_callback])
 scores = model.evaluate(inputList, resultList)
 print(type(model.metrics_names))
 print(model.metrics_names)
